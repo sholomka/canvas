@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<canvas id="canvas" height="1000px" width="1000px"></canvas>
+
+<script>
+    var canvas = document.getElementById('canvas');
+    var ctx = canvas.getContext('2d');
+
+    ctx.fillStyle = 'red';
+    ctx.fillRect(400, 400, 50, 100);
+    ctx.fillStyle = 'green';
+    ctx.fillRect(450, 400, 50, 100);
+    ctx.fillStyle = 'blue';
+    ctx.fillRect(500, 400, 50, 100);
+
+    ctx.strokeStyle = 'red';
+    ctx.lineWidth = 4;
+    ctx.strokeRect(10, 10, 100, 100);
+</script>
+
+</body>
+</html>
