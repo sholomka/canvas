@@ -3,47 +3,131 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+
+    <script src="https://code.jquery.com/jquery-2.1.0.js"></script>
+
 </head>
 <body>
+
+
+<h1 id="heading">Hello World!</h1>
 
 <canvas id="canvas" height="1000px" width="1000px"></canvas>
 
 <script>
+
+
+
+
+
     var canvas = document.getElementById('canvas');
     var ctx = canvas.getContext('2d');
 
+//    ctx.fillStyle = 'red';
+//    ctx.fillRect(400, 400, 50, 100);
+//    ctx.fillStyle = 'green';
+//    ctx.fillRect(450, 400, 50, 100);
+//    ctx.fillStyle = 'blue';
+//    ctx.fillRect(500, 400, 50, 100);
+//
+//    ctx.strokeStyle = 'red';
+//    ctx.lineWidth = 4;
+//    ctx.strokeRect(10, 10, 100, 100);
+
+
+//    ctx.strokeStyle= 'green';
+//    ctx.lineWidth = 4;
+//    ctx.beginPath();
+//    ctx.moveTo(10, 10);
+//    ctx.lineTo(60, 60);
+//    ctx.moveTo(60, 10);
+//    ctx.lineTo(10, 60);
+//    ctx.stroke();
+
+//    ctx.fillStyle = 'blue';
+//    ctx.beginPath();
+//    ctx.moveTo(100, 100);
+//    ctx.lineTo(100, 60);
+//    ctx.lineTo(130, 30);
+//    ctx.lineTo(160, 60);
+//    ctx.lineTo(160, 100);
+//    ctx.lineTo(100, 100);
+//    ctx.fill();
+
+
+
+    var circle = function(x, y, radius, fillCircle) {
+        ctx.beginPath();
+        ctx.arc(x, y, radius, 2 * Math.PI, false);
+        fillCircle ? ctx.fill() : ctx.stroke();
+    };
+
+//    ctx.strokeStyle = 'green';
+//    circle(100, 100, 10, false);
+//    ctx.strokeStyle = 'yellow';
+//    circle(100, 100, 20, false);
+//    ctx.strokeStyle = 'red';
+//    circle(100, 100, 30, false);
+//    ctx.strokeStyle = 'blue';
+//    circle(100, 100, 40, false);
+
+    var drowSnowMan = function(x, y) {
+        ctx.strokeStyle = 'black';
+        circle(x, y, 30, false);
+
+        ctx.strokeStyle = 'black';
+        circle(x, y + 80, 50, false);
+
+        ctx.fillStyle = 'orange';
+        circle(x, y, 5, true);
+
+        ctx.fillStyle = 'black';
+        circle(x,  y + 80, 5, true);
+
+        ctx.fillStyle = 'black';
+        circle(x - 10, y - 10, 5, true);
+
+        ctx.fillStyle = 'black';
+        circle(x + 10, y - 10, 5, true);
+
+        ctx.fillStyle = 'black';
+        circle(x, y + 60, 5, true);
+
+        ctx.fillStyle = 'black';
+        circle(x, y + 100, 5, true);
+    };
+
+    drowSnowMan(800, 400);
+
+
+    var points = [[50, 50], [50, 100], [100, 100], [100, 50], [50, 50]];
+    var mysteryPoints = [[50, 50], [50, 100], [25, 120], [100, 50], [70, 90], [100, 90], [70, 120]];
+
+    var drawPoints = function(points) {
+        ctx.strokeStyle = 'red';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(points[0][0], points[0][1]);
+
+        for (var i = 1; i < points.length; i++) {
+            ctx.lineTo(points[i][0], points[i][1]);
+        }
+
+        ctx.stroke();
+    };
+
+    drawPoints(points);
+    drawPoints(mysteryPoints);
+
     ctx.fillStyle = 'red';
-    ctx.fillRect(400, 400, 50, 100);
-    ctx.fillStyle = 'green';
-    ctx.fillRect(450, 400, 50, 100);
-    ctx.fillStyle = 'blue';
-    ctx.fillRect(500, 400, 50, 100);
+    $('html').mousemove(function(event) {
 
-    ctx.strokeStyle = 'red';
-    ctx.lineWidth = 4;
-    ctx.strokeRect(10, 10, 100, 100);
-
-
-    ctx.strokeStyle= 'green';
-    ctx.lineWidth = 4;
-    ctx.beginPath();
-    ctx.moveTo(10, 10);
-    ctx.lineTo(60, 60);
-    ctx.moveTo(60, 10);
-    ctx.lineTo(10, 60);
-    ctx.stroke();
-
-    ctx.fillStyle = 'blue';
-    ctx.beginPath();
-    ctx.moveTo(100, 100);
-    ctx.lineTo(100, 60);
-    ctx.lineTo(130, 30);
-    ctx.lineTo(160, 60);
-    ctx.lineTo(160, 100);
-    ctx.lineTo(100, 100);
-    ctx.fill();
-
-
+        circle(event.pageX, event.pageY, 3, true);
+//       $('#heading').offset({
+//          left:  event.pageX,
+//          top:  event.pageY
+//       });
+    });
 
 </script>
 
