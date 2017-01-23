@@ -7,54 +7,123 @@
 <body>
 
 
+<canvas id="canvas" height="1000px" width="1000px" style="border: 1px solid"></canvas>
+
 <script>
+    function showMan(tryFalse) {
+        var canvas = document.getElementById('canvas');
+        var context = canvas.getContext('2d');
 
-    var words = [
-        'оладушек',
-        'виселица',
-        'утка',
-        'кольцо'
-    ];
-
-    var word = words[Math.floor(Math.random() * words.length)];
-    var answerArray = [];
+        context.strokeStyle = 'black';
+        context.beginPath();
 
 
+        switch(tryFalse) {
+            case 1:
+                context.strokeRect(500, 200, 50, 50);
+                break;
 
-    for (var i = 0; i < word.length; i++) {
-        answerArray[i] = '_';
-    }
+            case 2:
+                context.moveTo(525, 250);
+                context.lineTo(525, 300);
+                break;
 
-    var remainingWords = answerArray.length;
+            case 3:
+                context.moveTo(525, 300);
+                context.lineTo(450, 250);
+                break;
 
+            case 4:
+                context.moveTo(525, 300);
+                context.lineTo(600, 250);
+                break;
 
-    while (remainingWords > 0) {
+            case 5:
+                context.moveTo(525, 300);
+                context.lineTo(525, 350);
+                break;
 
-        alert(answerArray.join(' '));
+            case 6:
+                context.moveTo(525, 350);
+                context.lineTo(600, 400);
+                break;
 
-
-        var guese = prompt('Введите букву или нажмите отмена');
-
-
-        if (guese === null) {
-            break;
-        } else if (guese.length !== 1) {
-            alert('Нужно ввести одну букву');
-        } else {
-            for (var j = 0; j < word.length; j++) {
-               if (guese === word[j]) {
-                   answerArray[j] = guese;
-                   remainingWords--;
-               }
-            }
+            case 7:
+                context.moveTo(525, 350);
+                context.lineTo(450, 400);
+                break;
         }
+
+
+        console.log(tryFalse);
+
+        context.stroke();
     }
 
-    alert(answerArray.join(' '));
-    alert('Поздравляем, вы угадали слово: ' + word);
+    (function start() {
+        var words = [
+            'макака'
+        ];
+
+        var word = words[Math.floor(Math.random() * words.length)];
+        var answerArray = [];
 
 
 
+        for (var i = 0; i < word.length; i++) {
+            answerArray[i] = '_';
+        }
+
+
+
+        var remainingLetters = word.length;
+
+        var tries = 0;
+        var tryFalse = 0;
+
+
+        while (remainingLetters > 0 && tries < 7 ) {
+            var letterPresent = false;
+
+            alert(answerArray.join(' '));
+            var guess = prompt('Введите букву или нажмите отмена');
+
+
+            if (guess === null) {
+                break;
+            } else if (guess.length !== 1) {
+                alert('Нужно ввести одну букву');
+            } else {
+                guess = guess.toLowerCase();
+
+                for (var j = 0; j < word.length; j++) {
+                    if (guess === word[j]) {
+                        if (answerArray[j] === '_') {
+                            console.log('1');
+                            answerArray[j] = guess;
+                            remainingLetters--;
+                            letterPresent = true;
+                        }
+                    }
+                }
+
+                if (!letterPresent) {
+                    tryFalse++;
+                    showMan(tryFalse);
+                }
+            }
+
+            tries++;
+        }
+
+        if (tries == 11) {
+            alert('К сожалению вы исчерпали лимит своих попыток');
+        } else {
+            alert(answerArray.join(' '));
+            alert('Поздравляем, вы угадали слово: ' + word);
+        }
+
+    }());
 </script>
 
 </body>
