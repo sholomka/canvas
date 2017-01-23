@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Виселица</title>
+</head>
+<body>
+
+
+<script>
+
+    var words = [
+        'оладушек',
+        'виселица',
+        'утка',
+        'кольцо'
+    ];
+
+    var word = words[Math.floor(Math.random() * words.length)];
+    var answerArray = [];
+
+
+
+    for (var i = 0; i < word.length; i++) {
+        answerArray[i] = '_';
+    }
+
+    var remainingWords = answerArray.length;
+
+
+    while (remainingWords > 0) {
+
+        alert(answerArray.join(' '));
+
+
+        var guese = prompt('Введите букву или нажмите отмена');
+
+
+        if (guese === null) {
+            break;
+        } else if (guese.length !== 1) {
+            alert('Нужно ввести одну букву');
+        } else {
+            for (var j = 0; j < word.length; j++) {
+               if (guese === word[j]) {
+                   answerArray[j] = guese;
+                   remainingWords--;
+               }
+            }
+        }
+    }
+
+    alert(answerArray.join(' '));
+    alert('Поздравляем, вы угадали слово: ' + word);
+
+
+
+</script>
+
+</body>
+</html>
