@@ -16,8 +16,7 @@
 
         context.strokeStyle = 'black';
         context.beginPath();
-
-
+        
         switch(tryFalse) {
             case 1:
                 context.strokeRect(500, 200, 50, 50);
@@ -68,23 +67,16 @@
         var word = words[Math.floor(Math.random() * words.length)];
         var answerArray = [];
 
-
-
         for (var i = 0; i < word.length; i++) {
             answerArray[i] = '_';
         }
 
-
-
         var remainingLetters = word.length;
-
         var tries = 0;
         var tryFalse = 0;
 
-
-        while (remainingLetters > 0 && tries < 7 ) {
+        while (remainingLetters > 0 && tries < 8 ) {
             var letterPresent = false;
-
             alert(answerArray.join(' '));
             var guess = prompt('Введите букву или нажмите отмена');
 
@@ -99,7 +91,6 @@
                 for (var j = 0; j < word.length; j++) {
                     if (guess === word[j]) {
                         if (answerArray[j] === '_') {
-                            console.log('1');
                             answerArray[j] = guess;
                             remainingLetters--;
                             letterPresent = true;
@@ -116,7 +107,7 @@
             tries++;
         }
 
-        if (tries == 11) {
+        if (tries === 8) {
             alert('К сожалению вы исчерпали лимит своих попыток');
         } else {
             alert(answerArray.join(' '));
