@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Bee Animation</title>
+
+
+</head>
+<body>
+<canvas id="canvas" width="200" height="200"></canvas>
+
+
+
+<script src="https://code.jquery.com/jquery-2.1.0.js"></script>
+
+<script>
+    let canvas = document.getElementById('canvas'),
+        ctx = canvas.getContext('2d'),
+        width = canvas.width,
+        height = canvas.height,
+        colors = ['red', 'orange', 'yellow', 'green', 'blue', 'purple'];
+
+
+
+    let Ball = function() {
+        this.x = width / 2;
+        this.y = height / 2;
+        this.radius = 10;
+        this.color = pickRandomColor(colors);
+
+        this.xSpeed = 5;
+        this.ySpeed = 0;
+        this.direction = 'right';
+
+        this.speed = 5;
+    };
+
+    let cirle = (x, y, radius, color, fill, startAngel = 0, endAngel = 2 * Math.PI) => {
+        ctx.beginPath();
+        ctx.fillStyle = color;
+
+        ctx.arc(x, y, radius, startAngel, endAngel);
+
+        if (fill) {
+            ctx.fill();
+        } else {
+            ctx.stroke();
+        }
+    };
+
+    let pickRandomColor = (colors) => {
+        return colors[Math.floor(Math.random() * colors.length)];
+    };
+
+    Ball.prototype.draw = function() {
+        cirle(this.x, this.y, this.radius, this.color, true)
+    };
+
+
+    Ball.prototype.move = function() {
+        this.x += this.xSpeed;
+        this.y += this.ySpeed;
+    };
+
+    Ball.prototype.checkCollision = function() {
+        if (this.x < 0 || this.x > width) {
+            this.xSpeed = -this.xSpeed;
+        }
+
+
+        if (this.x < 0) {
+            this.direction = 'right';
+        }
+
+        if (this.x > width) {
+            this.direction = 'left';
+        }
+
+
+        if (this.y < 0) {
+            this.direction = 'down';
+        }
+
+        if (this.x > width) {
+            this.direction = 'up';
+        }
+
+
+        if (this.y < 0 || this.y > height) {
+            this.ySpeed = -this.ySpeed;
+        }
+
+
+        console.log(this.direction);
+
+
+    };
+
+
+    Ball.prototype.setDirection = function(direction) {
+        switch(direction) {
+            case 'left':
+                this.xSpeed = -this.speed;
+                this.ySpeed = 0;
+                this.direction = 'left';
+                break;
+            case 'right':
+                this.xSpeed = this.speed;
+                this.ySpeed = 0;
+                this.direction = 'right';
+                break;
+            case 'up':
+                this.xSpeed = 0;
+                this.ySpeed = -this.speed;
+                this.direction = 'up';
+                break;
+            case 'down':
+                this.xSpeed = 0;
+                this.ySpeed = this.speed;
+                this.direction = 'down';
+                break;
+            case 'stop':
+                this.xSpeed = 0;
+                this.ySpeed = 0;
+                break;
+        }
+    };
+
+
+    Ball.prototype.setSpeed = function(speed) {
+        if (speed) {
+            this.speed = parseInt(speed);
+        }
+    };
+
+
+    let ball = new Ball();
+
+    let keyActions = {
+      37: 'left',
+      39: 'right',
+      38: 'up',
+      40: 'down',
+      32: 'stop',
+    };
+
+    let speeds = {
+        49: '1',
+        50: '2',
+        51: '3',
+        52: '4',
+        53: '5',
+        54: '6',
+        55: '7',
+        56: '8',
+        57: '9'
+    };
+
+    let changeSpeed = {
+        90: 'reduce',
+        88: 'increase',
+    };
+
+    let changeSize = {
+        67: 'reduce',
+        86: 'increase',
+    };
+
+
+    Ball.prototype.changeSpeed = function(keyCode) {
+        if (keyCode === 'reduce') {
+            if (this.xSpeed > 0) {
+                this.xSpeed--;
+            }
+
+            if (this.xSpeed < 0) {
+                this.xSpeed++;
+            }
+
+            if (this.ySpeed > 0) {
+                this.ySpeed--;
+            }
+
+            if (this.ySpeed < 0) {
+                this.ySpeed++;
+            }
+        }
+
+        if (keyCode === 'increase') {
+            if (this.direction === 'right' || this.direction === 'left') {
+                if (this.xSpeed === 0) {
+                    if (this.direction === 'right') {
+                        this.xSpeed++;
+                    } else {
+                        this.xSpeed--;
+                    }
+                } else if (this.xSpeed > 0) {
+                    this.xSpeed++;
+                } else {
+                    this.xSpeed--;
+                }
+            } else {
+                if (this.ySpeed === 0) {
+                    if (this.direction === 'down') {
+                        this.ySpeed++;
+                    } else {
+                        this.ySpeed--;
+                    }
+                } else if (this.ySpeed > 0) {
+                    this.ySpeed++;
+                } else {
+                    this.ySpeed--;
+                }
+            }
+        }
+    };
+
+
+    Ball.prototype.changeSize = function(keyCode) {
+        if (keyCode === 'reduce') {
+            if (this.radius > 1) {
+                this.radius--;
+            }
+        }
+
+        if (keyCode === 'increase') {
+            if (this.radius >= 0) {
+                this.radius++;
+            }
+        }
+    };
+
+
+    $('body').keydown(function(e) {
+        let direction = keyActions[e.keyCode];
+        let speed = speeds[e.keyCode];
+        let speedValue = changeSpeed[e.keyCode];
+        let sizeValue = changeSize[e.keyCode];
+
+        ball.changeSpeed(speedValue);
+        ball.changeSize(sizeValue);
+        ball.setDirection(direction);
+        ball.setSpeed(speed);
+    });
+
+    setInterval(() => {
+        ctx.clearRect(0, 0, width, height);
+
+        ball.draw();
+        ball.move();
+        ball.checkCollision();
+
+        ctx.strokeRect(0, 0, width, height);
+    }, 300);
+
+</script>
+</body>
+</html>

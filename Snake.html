@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Snake</title>
+</head>
+<body>
+
+<canvas id="canvas" width="400" height="400"></canvas>
+<script src="https://code.jquery.com/jquery-2.1.0.js"></script>
+
+<script>
+
+    let canvas = document.getElementById('canvas'),
+        ctx = canvas.getContext('2d'),
+        width = canvas.width,
+        height = canvas.height,
+        blockSize = 10,
+        score = 0;
+
+    let drawBorder = function() {
+        ctx.fillStyle = 'gray';
+        ctx.fillRect(0, 0, width, blockSize);
+        ctx.fillRect(0, height - blockSize, width, blockSize);
+        ctx.fillRect(0, 0, blockSize, height);
+        ctx.fillRect(width   - blockSize, 0, blockSize, height);
+    };
+
+    let drawScore = function() {
+        ctx.font = '20px Courier';
+        ctx.fillStyle = 'black';
+        ctx.textAlign = 'left';
+        ctx.textBaseline = 'top';
+        ctx.fillText('Score: ' + score, blockSize, blockSize);
+    };
+
+    let gameOver = function() {
+        ctx.font = '60px Courier';
+        ctx.fillStyle = 'black';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('Game Over!', width / 2, height / 2);
+    };
+
+
+
+//    gameOver();
+
+    setInterval(function() {
+        ctx.clearRect(0, 0, width, height);
+        score++;
+        drawScore();
+        drawBorder();
+    }, 100);
+
+
+
+
+
+
+
+
+</script>
+
+</body>
+</html>
