@@ -1,27 +1,34 @@
-const blockSize = 10,
-    canvas = document.getElementById('canvas'),
-    ctx = canvas.getContext('2d');
+import { registry } from './Registry.js';
+import { utils } from './Utils.js';
 
 class Block {
+    static get ctx() {
+        return registry.get('ctx');
+    }
+
+    static get blockSize() {
+        return registry.get('blockSize');
+    }
+
     constructor(col, row) {
         this.col = col;
         this.row = row;
     }
 
     drawSquare(color) {
-        let x = this.col * blockSize,
-            y = this.row * blockSize;
+        let x = this.col * Block.blockSize,
+            y = this.row * Block.blockSize;
 
-        ctx.fillStyle = color;
-        ctx.fillRect(x, y, blockSize, blockSize);
+        Block.ctx.fillStyle = color;
+        Block.ctx.fillRect(x, y, Block.blockSize, Block.blockSize);
     };
 
     drawCircle(color) {
-        let centerX = this.col * blockSize + blockSize / 2,
-            centerY = this.row * blockSize + blockSize / 2;
+        let centerX = this.col * Block.blockSize + Block.blockSize / 2,
+            centerY = this.row * Block.blockSize + Block.blockSize / 2;
 
-            ctx.fillStyle = color;
-            Main.circle(centerX, centerY, blockSize / 2, true);
+            Block.ctx.fillStyle = color;
+            utils.circle(centerX, centerY, Block.blockSize / 2, true);
     };
 
     equal(otherBlock) {

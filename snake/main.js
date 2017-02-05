@@ -1,5 +1,7 @@
 import { snake } from './Snake.js';
+import { registry } from './Registry.js';
 import { apple } from './Apple.js';
+import { utils } from './Utils.js';
 
 class Main {
     static get canvas() {
@@ -35,15 +37,23 @@ class Main {
     }
 
     init() {
+        registry.set('ctx', Main.ctx);
+        registry.set('blockSize', Main.blockSize);
+        registry.set('width', Main.width);
+        registry.set('height', Main.height);
+        registry.set('score', Main.score);
+        registry.set('widthInBlocks', Main.widthInBlocks);
+        registry.set('heightInBlocks', Main.heightInBlocks);
+        registry.set('score', Main.score);
+
         this.intervalId = setInterval(() => {
             Main.ctx.clearRect(0, 0, Main.width, Main.height);
-            this.drawScore();
+            utils.drawScore();
             apple.draw();
             snake.draw();
             snake.move();
-            this.drawBorder();
+            utils.drawBorder();
         }, 100);
-
 
         let directions = {
             37: 'left',
@@ -60,44 +70,6 @@ class Main {
             }
         });
     }
-
-   drawBorder() {
-       Main.ctx.fillStyle = 'gray';
-       Main.ctx.fillRect(0, 0, Main.width, Main.blockSize);
-       Main.ctx.fillRect(0, Main.height - Main.blockSize, Main.width, Main.blockSize);
-       Main.ctx.fillRect(0, 0, Main.blockSize, Main.height);
-       Main.ctx.fillRect(Main.width  - Main.blockSize, 0, Main.blockSize, Main.height);
-    };
-
-    drawScore() {
-        Main.ctx.font = '20px Courier';
-        Main.ctx.fillStyle = 'black';
-        Main.ctx.textAlign = 'left';
-        Main.ctx.textBaseline = 'top';
-        Main.ctx.fillText('Score: ' + Main.score, Main.blockSize, Main.blockSize);
-    };
-
-    gameOver() {
-        clearInterval(this.intervalId);
-        Main.ctx.font = '60px Courier';
-        Main.ctx.fillStyle = 'black';
-        Main.ctx.textAlign = 'center';
-        Main.ctx.textBaseline = 'middle';
-        Main.ctx.fillText('Game Over!', Main.width / 2, Main.height / 2);
-    };
-
-
-    circle(x, y, radius, fillCircle, startAngel = 0, endAngel = 2 * Math.PI) {
-        Main.ctx.beginPath();
-
-        Main.ctx.arc(x, y, radius, startAngel, endAngel);
-
-        if (fillCircle) {
-            Main.ctx.fill();
-        } else {
-            Main.ctx.stroke();
-        }
-    };
 }
 
 new Main().init();

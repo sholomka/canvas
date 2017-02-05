@@ -1,6 +1,22 @@
 import Block from './Block.js';
+import { registry } from './Registry.js';
+import { utils } from './Utils.js';
+import { apple } from './Apple.js';
 
 class Snake {
+    static get widthInBlocks() {
+        return registry.get('widthInBlocks');
+    }
+
+    static get heightInBlocks() {
+        return registry.get('heightInBlocks');
+    }
+
+    static get score() {
+        return registry.get('score');
+    }
+
+
     constructor() {
         this.segments = [
             new Block(7,5),
@@ -35,14 +51,15 @@ class Snake {
         }
 
         if (this.checkCollision(newHead)) {
-            gameOver();
+            utils.gameOver();
             return;
         }
 
         this.segments.unshift(newHead);
 
         if (newHead.equal(apple.position)) {
-            score++;
+            let score = Snake.score;
+            registry.set('score', score++);
             apple.move()
         } else {
             this.segments.pop();
@@ -51,9 +68,9 @@ class Snake {
 
     checkCollision(head) {
         let leftCollision = (head.col === 0),
-            rightCollision = (head.col === widthInBlocks - 1),
+            rightCollision = (head.col === Snake.widthInBlocks - 1),
             topCollision = (head.row === 0),
-            bottomCollision = (head.row === heightInBlocks - 1);
+            bottomCollision = (head.row === Snake.heightInBlocks - 1);
 
         let wallCollision = leftCollision || rightCollision || topCollision || bottomCollision;
         let selfCollision = false;

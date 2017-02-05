@@ -1,6 +1,15 @@
 import Block from './Block.js';
+import { registry } from './Registry.js';
 
 class Apple {
+    static get widthInBlocks() {
+        return registry.get('widthInBlocks');
+    }
+
+    static get heightInBlocks() {
+        return registry.get('heightInBlocks');
+    }
+
     constructor() {
         this.position = new Block(10, 10);
     }
@@ -10,8 +19,8 @@ class Apple {
     };
 
     move() {
-        let randomCol = Math.floor(Math.random() * (widthInBlocks - 2)) + 1,
-            randomRow = Math.floor(Math.random() * (heightInBlocks - 2)) + 1;
+        let randomCol = Math.floor(Math.random() * (Apple.widthInBlocks - 2)) + 1,
+            randomRow = Math.floor(Math.random() * (Apple.heightInBlocks - 2)) + 1;
 
         this.position = new Block(randomCol, randomRow);
     };

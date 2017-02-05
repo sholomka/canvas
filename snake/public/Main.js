@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "";
 
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 3);
+/******/ 	return __webpack_require__(__webpack_require__.s = 5);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -81,50 +81,143 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var blockSize = 10,
-    canvas = document.getElementById('canvas'),
-    ctx = canvas.getContext('2d');
+var Registry = function () {
+    function Registry() {
+        _classCallCheck(this, Registry);
 
-var Block = function () {
-    function Block(col, row) {
-        _classCallCheck(this, Block);
-
-        this.col = col;
-        this.row = row;
+        this.values = {};
     }
 
-    _createClass(Block, [{
-        key: 'drawSquare',
-        value: function drawSquare(color) {
-            var x = this.col * blockSize,
-                y = this.row * blockSize;
+    _createClass(Registry, [{
+        key: "get",
+        value: function get(value) {
 
-            ctx.fillStyle = color;
-            ctx.fillRect(x, y, blockSize, blockSize);
+            // console.log(this.values.blockSize);
+            // console.log(value);
+            // console.log(this.values.hasOwnProperty(value));
+            // console.log(this.values[value]);
+
+
+            if (this.values.hasOwnProperty(value)) {
+                return this.values[value];
+            }
+
+            return null;
         }
     }, {
-        key: 'drawCircle',
-        value: function drawCircle(color) {
-            var centerX = this.col * blockSize + blockSize / 2,
-                centerY = this.row * blockSize + blockSize / 2;
-
-            ctx.fillStyle = color;
-            Main.circle(centerX, centerY, blockSize / 2, true);
-        }
-    }, {
-        key: 'equal',
-        value: function equal(otherBlock) {
-            return this.col === otherBlock.col && this.row === otherBlock.row;
+        key: "set",
+        value: function set(key, value) {
+            this.values[key] = value;
         }
     }]);
 
-    return Block;
+    return Registry;
 }();
 
-exports.default = Block;
+var registry = exports.registry = new Registry();
 
 /***/ }),
 /* 1 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.utils = undefined;
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _Registry = __webpack_require__(0);
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Utils = function () {
+    _createClass(Utils, null, [{
+        key: 'ctx',
+        get: function get() {
+            return _Registry.registry.get('ctx');
+        }
+    }, {
+        key: 'blockSize',
+        get: function get() {
+            return _Registry.registry.get('blockSize');
+        }
+    }, {
+        key: 'width',
+        get: function get() {
+            return _Registry.registry.get('width');
+        }
+    }, {
+        key: 'height',
+        get: function get() {
+            return _Registry.registry.get('height');
+        }
+    }, {
+        key: 'score',
+        get: function get() {
+            return _Registry.registry.get('score');
+        }
+    }]);
+
+    function Utils() {
+        _classCallCheck(this, Utils);
+    }
+
+    _createClass(Utils, [{
+        key: 'drawBorder',
+        value: function drawBorder() {
+            Utils.ctx.fillStyle = 'gray';
+            Utils.ctx.fillRect(0, 0, Utils.width, Utils.blockSize);
+            Utils.ctx.fillRect(0, Utils.height - Utils.blockSize, Utils.width, Utils.blockSize);
+            Utils.ctx.fillRect(0, 0, Utils.blockSize, Utils.height);
+            Utils.ctx.fillRect(Utils.width - Utils.blockSize, 0, Utils.blockSize, Utils.height);
+        }
+    }, {
+        key: 'drawScore',
+        value: function drawScore() {
+            Utils.ctx.font = '20px Courier';
+            Utils.ctx.fillStyle = 'black';
+            Utils.ctx.textAlign = 'left';
+            Utils.ctx.textBaseline = 'top';
+            Utils.ctx.fillText('Score: ' + Utils.score, Utils.blockSize, Utils.blockSize);
+        }
+    }, {
+        key: 'gameOver',
+        value: function gameOver() {
+            clearInterval(this.intervalId);
+            Utils.ctx.font = '60px Courier';
+            Utils.ctx.fillStyle = 'black';
+            Utils.ctx.textAlign = 'center';
+            Utils.ctx.textBaseline = 'middle';
+            Utils.ctx.fillText('Game Over!', Utils.width / 2, Utils.height / 2);
+        }
+    }, {
+        key: 'circle',
+        value: function circle(x, y, radius, fillCircle) {
+            var startAngel = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 0;
+            var endAngel = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : 2 * Math.PI;
+
+            Utils.ctx.beginPath();
+            Utils.ctx.arc(x, y, radius, startAngel, endAngel);
+
+            if (fillCircle) {
+                Utils.ctx.fill();
+            } else {
+                Utils.ctx.stroke();
+            }
+        }
+    }]);
+
+    return Utils;
+}();
+
+var utils = exports.utils = new Utils();
+
+/***/ }),
+/* 2 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -137,15 +230,29 @@ exports.apple = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _Block = __webpack_require__(0);
+var _Block = __webpack_require__(3);
 
 var _Block2 = _interopRequireDefault(_Block);
+
+var _Registry = __webpack_require__(0);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var Apple = function () {
+    _createClass(Apple, null, [{
+        key: 'widthInBlocks',
+        get: function get() {
+            return _Registry.registry.get('widthInBlocks');
+        }
+    }, {
+        key: 'heightInBlocks',
+        get: function get() {
+            return _Registry.registry.get('heightInBlocks');
+        }
+    }]);
+
     function Apple() {
         _classCallCheck(this, Apple);
 
@@ -160,8 +267,8 @@ var Apple = function () {
     }, {
         key: 'move',
         value: function move() {
-            var randomCol = Math.floor(Math.random() * (widthInBlocks - 2)) + 1,
-                randomRow = Math.floor(Math.random() * (heightInBlocks - 2)) + 1;
+            var randomCol = Math.floor(Math.random() * (Apple.widthInBlocks - 2)) + 1,
+                randomRow = Math.floor(Math.random() * (Apple.heightInBlocks - 2)) + 1;
 
             this.position = new _Block2.default(randomCol, randomRow);
         }
@@ -173,7 +280,76 @@ var Apple = function () {
 var apple = exports.apple = new Apple();
 
 /***/ }),
-/* 2 */
+/* 3 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _Registry = __webpack_require__(0);
+
+var _Utils = __webpack_require__(1);
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Block = function () {
+    _createClass(Block, null, [{
+        key: 'ctx',
+        get: function get() {
+            return _Registry.registry.get('ctx');
+        }
+    }, {
+        key: 'blockSize',
+        get: function get() {
+            return _Registry.registry.get('blockSize');
+        }
+    }]);
+
+    function Block(col, row) {
+        _classCallCheck(this, Block);
+
+        this.col = col;
+        this.row = row;
+    }
+
+    _createClass(Block, [{
+        key: 'drawSquare',
+        value: function drawSquare(color) {
+            var x = this.col * Block.blockSize,
+                y = this.row * Block.blockSize;
+
+            Block.ctx.fillStyle = color;
+            Block.ctx.fillRect(x, y, Block.blockSize, Block.blockSize);
+        }
+    }, {
+        key: 'drawCircle',
+        value: function drawCircle(color) {
+            var centerX = this.col * Block.blockSize + Block.blockSize / 2,
+                centerY = this.row * Block.blockSize + Block.blockSize / 2;
+
+            Block.ctx.fillStyle = color;
+            _Utils.utils.circle(centerX, centerY, Block.blockSize / 2, true);
+        }
+    }, {
+        key: 'equal',
+        value: function equal(otherBlock) {
+            return this.col === otherBlock.col && this.row === otherBlock.row;
+        }
+    }]);
+
+    return Block;
+}();
+
+exports.default = Block;
+
+/***/ }),
+/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -186,15 +362,38 @@ exports.snake = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _Block = __webpack_require__(0);
+var _Block = __webpack_require__(3);
 
 var _Block2 = _interopRequireDefault(_Block);
+
+var _Registry = __webpack_require__(0);
+
+var _Utils = __webpack_require__(1);
+
+var _Apple = __webpack_require__(2);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var Snake = function () {
+    _createClass(Snake, null, [{
+        key: 'widthInBlocks',
+        get: function get() {
+            return _Registry.registry.get('widthInBlocks');
+        }
+    }, {
+        key: 'heightInBlocks',
+        get: function get() {
+            return _Registry.registry.get('heightInBlocks');
+        }
+    }, {
+        key: 'score',
+        get: function get() {
+            return _Registry.registry.get('score');
+        }
+    }]);
+
     function Snake() {
         _classCallCheck(this, Snake);
 
@@ -230,15 +429,16 @@ var Snake = function () {
             }
 
             if (this.checkCollision(newHead)) {
-                gameOver();
+                _Utils.utils.gameOver();
                 return;
             }
 
             this.segments.unshift(newHead);
 
-            if (newHead.equal(apple.position)) {
-                score++;
-                apple.move();
+            if (newHead.equal(_Apple.apple.position)) {
+                var score = Snake.score;
+                _Registry.registry.set('score', score++);
+                _Apple.apple.move();
             } else {
                 this.segments.pop();
             }
@@ -247,9 +447,9 @@ var Snake = function () {
         key: 'checkCollision',
         value: function checkCollision(head) {
             var leftCollision = head.col === 0,
-                rightCollision = head.col === widthInBlocks - 1,
+                rightCollision = head.col === Snake.widthInBlocks - 1,
                 topCollision = head.row === 0,
-                bottomCollision = head.row === heightInBlocks - 1;
+                bottomCollision = head.row === Snake.heightInBlocks - 1;
 
             var wallCollision = leftCollision || rightCollision || topCollision || bottomCollision;
             var selfCollision = false;
@@ -279,7 +479,7 @@ var Snake = function () {
 var snake = exports.snake = new Snake();
 
 /***/ }),
-/* 3 */
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -287,9 +487,13 @@ var snake = exports.snake = new Snake();
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _Snake = __webpack_require__(2);
+var _Snake = __webpack_require__(4);
 
-var _Apple = __webpack_require__(1);
+var _Registry = __webpack_require__(0);
+
+var _Apple = __webpack_require__(2);
+
+var _Utils = __webpack_require__(1);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -301,15 +505,22 @@ var Main = function () {
     _createClass(Main, [{
         key: 'init',
         value: function init() {
-            var _this = this;
+            _Registry.registry.set('ctx', Main.ctx);
+            _Registry.registry.set('blockSize', Main.blockSize);
+            _Registry.registry.set('width', Main.width);
+            _Registry.registry.set('height', Main.height);
+            _Registry.registry.set('score', Main.score);
+            _Registry.registry.set('widthInBlocks', Main.widthInBlocks);
+            _Registry.registry.set('heightInBlocks', Main.heightInBlocks);
+            _Registry.registry.set('score', Main.score);
 
             this.intervalId = setInterval(function () {
                 Main.ctx.clearRect(0, 0, Main.width, Main.height);
-                _this.drawScore();
+                _Utils.utils.drawScore();
                 _Apple.apple.draw();
                 _Snake.snake.draw();
                 _Snake.snake.move();
-                _this.drawBorder();
+                _Utils.utils.drawBorder();
             }, 100);
 
             var directions = {
@@ -327,51 +538,7 @@ var Main = function () {
                 }
             });
         }
-    }, {
-        key: 'drawBorder',
-        value: function drawBorder() {
-            Main.ctx.fillStyle = 'gray';
-            Main.ctx.fillRect(0, 0, Main.width, Main.blockSize);
-            Main.ctx.fillRect(0, Main.height - Main.blockSize, Main.width, Main.blockSize);
-            Main.ctx.fillRect(0, 0, Main.blockSize, Main.height);
-            Main.ctx.fillRect(Main.width - Main.blockSize, 0, Main.blockSize, Main.height);
-        }
-    }, {
-        key: 'drawScore',
-        value: function drawScore() {
-            Main.ctx.font = '20px Courier';
-            Main.ctx.fillStyle = 'black';
-            Main.ctx.textAlign = 'left';
-            Main.ctx.textBaseline = 'top';
-            Main.ctx.fillText('Score: ' + Main.score, Main.blockSize, Main.blockSize);
-        }
-    }, {
-        key: 'gameOver',
-        value: function gameOver() {
-            clearInterval(this.intervalId);
-            Main.ctx.font = '60px Courier';
-            Main.ctx.fillStyle = 'black';
-            Main.ctx.textAlign = 'center';
-            Main.ctx.textBaseline = 'middle';
-            Main.ctx.fillText('Game Over!', Main.width / 2, Main.height / 2);
-        }
     }], [{
-        key: 'circle',
-        value: function circle(x, y, radius, fillCircle) {
-            var startAngel = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 0;
-            var endAngel = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : 2 * Math.PI;
-
-            Main.ctx.beginPath();
-
-            Main.ctx.arc(x, y, radius, startAngel, endAngel);
-
-            if (fillCircle) {
-                Main.ctx.fill();
-            } else {
-                Main.ctx.stroke();
-            }
-        }
-    }, {
         key: 'canvas',
         get: function get() {
             return document.getElementById('canvas');
