@@ -36,10 +36,6 @@
     };
 
     let gameOver = function() {
-        console.log(intervalId);
-
-
-        clearTimeout(intervalId);
         ctx.font = '60px Courier';
         ctx.fillStyle = 'black';
         ctx.textAlign = 'center';
@@ -128,7 +124,7 @@
 
         if (this.checkCollision(newHead)) {
             gameOver();
-            return;
+            return false;
         }
 
         this.segments.unshift(newHead);
@@ -136,14 +132,18 @@
         if (newHead.equal(apple.position)) {
             score++;
             animationTime -= 10;
+            while (!apple.collision) {
+                apple.move();
+            }
+            apple.collision = false;
 
-            console.log(animationTime);
+            console.log(apple.collision);
 
-
-            apple.move()
         } else {
             this.segments.pop();
         }
+
+        return true;
     };
 
     Snake.prototype.checkCollision = function(head) {
@@ -178,6 +178,7 @@
 
     let Apple = function() {
         this.position = new Block(10, 10);
+        this.collision = false;
     };
 
 
@@ -185,12 +186,22 @@
         this.position.drawCircle('LimeGreen')
     };
 
+
     Apple.prototype.move = function() {
         let randomCol = Math.floor(Math.random() * (widthInBlocks - 2)) + 1,
             randomRow = Math.floor(Math.random() * (heightInBlocks - 2)) + 1;
 
+        for (let i in snake.segments) {
+            if (snake.segments[i].col === randomCol && snake.segments[i].row === randomRow) {
+                this.collision = false;
+                return;
+            }
+        }
+
         this.position = new Block(randomCol, randomRow);
+        this.collision = true;
     };
+
 
     let snake = new Snake();
     let apple = new Apple();
@@ -205,14 +216,11 @@
         drawScore();
         apple.draw();
         snake.draw();
-        snake.move();
         drawBorder();
 
-        console.log('1');
-
-        clearTimeout(intervalId);
-
-        intervalId = setTimeout(gameLoop, animationTime);
+        if (snake.move()) {
+            setTimeout(gameLoop, animationTime);
+        }
     };
 
     gameLoop();
