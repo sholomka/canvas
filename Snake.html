@@ -6,7 +6,7 @@
 </head>
 <body>
 
-<canvas id="canvas" width="400" height="400"></canvas>
+<canvas id="canvas" width="500" height="500"></canvas>
 <script src="https://code.jquery.com/jquery-2.1.0.js"></script>
 
 <script>
@@ -38,12 +38,12 @@
     };
 
     let gameOver = function() {
-        clearInterval(intervalId);
         ctx.font = '60px Courier';
         ctx.fillStyle = 'black';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
         ctx.fillText('Game Over!', width / 2, height / 2);
+        return;
     };
 
     let circle = (x, y, radius, fillCircle, startAngel = 0, endAngel = 2 * Math.PI) => {
@@ -96,8 +96,12 @@
     };
 
     Snake.prototype.draw = function() {
+
+        let colors = ['green', 'blue', 'yellow'];
+
         for (let i = 0; i < this.segments.length; i++) {
-            this.segments[i].drawSquare('blue');
+            let color = colors[Math.floor(Math.random() * colors.length)];
+            this.segments[i].drawSquare(color);
         }
     };
 
@@ -119,17 +123,26 @@
 
         if (this.checkCollision(newHead)) {
             gameOver();
-            return;
+            return false;
         }
 
         this.segments.unshift(newHead);
 
         if (newHead.equal(apple.position)) {
             score++;
-            apple.move()
+            animationTime -= 10;
+            while (!apple.collision) {
+                apple.move();
+            }
+            apple.collision = false;
+
+            console.log(apple.collision);
+
         } else {
             this.segments.pop();
         }
+
+        return true;
     };
 
     Snake.prototype.checkCollision = function(head) {
@@ -163,30 +176,61 @@
 
     let Apple = function() {
         this.position = new Block(10, 10);
+        this.collision = false;
     };
 
     Apple.prototype.draw = function() {
         this.position.drawCircle('LimeGreen')
     };
 
+
     Apple.prototype.move = function() {
         let randomCol = Math.floor(Math.random() * (widthInBlocks - 2)) + 1,
             randomRow = Math.floor(Math.random() * (heightInBlocks - 2)) + 1;
 
+        for (let i in snake.segments) {
+            if (snake.segments[i].col === randomCol && snake.segments[i].row === randomRow) {
+                this.collision = false;
+                return;
+            }
+        }
+
         this.position = new Block(randomCol, randomRow);
+        this.collision = true;
     };
+
 
     let snake = new Snake();
     let apple = new Apple();
 
-    let intervalId = setInterval(function() {
+
+    let animationTime = 100;
+
+    let intervalId = null;
+
+    let gameLoop = function() {
         ctx.clearRect(0, 0, width, height);
         drawScore();
         apple.draw();
         snake.draw();
-        snake.move();
         drawBorder();
-    }, 100);
+
+        if (snake.move()) {
+            setTimeout(gameLoop, animationTime);
+        }
+    };
+
+    gameLoop();
+
+
+//    let intervalId = setInterval(function() {
+//        ctx.clearRect(0, 0, width, height);
+//        drawScore();
+//        apple.draw();
+//        snake.draw();
+//        snake.move();
+//        drawBorder();
+//    }, 100);
 
     let directions = {
         37: 'left',
