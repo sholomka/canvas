@@ -19,6 +19,8 @@
         heightInBlocks = height / blockSize,
         score = 0;
 
+    canvas.focus();
+
     let drawBorder = function() {
         ctx.fillStyle = 'gray';
         ctx.fillRect(0, 0, width, blockSize);
@@ -44,7 +46,6 @@
         ctx.fillText('Game Over!', width / 2, height / 2);
     };
 
-
     let circle = (x, y, radius, fillCircle, startAngel = 0, endAngel = 2 * Math.PI) => {
         ctx.beginPath();
 
@@ -62,7 +63,6 @@
         this.row = row;
     };
 
-
     Block.prototype.drawSquare = function(color) {
         let x = this.col * blockSize,
             y = this.row * blockSize;
@@ -70,7 +70,6 @@
         ctx.fillStyle = color;
         ctx.fillRect(x, y, blockSize, blockSize);
     };
-
 
     Block.prototype.drawCircle = function(color) {
         let centerX = this.col * blockSize + blockSize / 2,
@@ -142,7 +141,6 @@
         let wallCollision = leftCollision || rightCollision || topCollision || bottomCollision;
         let selfCollision = false;
 
-
         for (let i = 0; i < this.segments.length; i++) {
             if (head.equal(this.segments[i])) {
                 selfCollision = true;
@@ -167,7 +165,6 @@
         this.position = new Block(10, 10);
     };
 
-
     Apple.prototype.draw = function() {
         this.position.drawCircle('LimeGreen')
     };
@@ -191,7 +188,6 @@
         drawBorder();
     }, 100);
 
-
     let directions = {
         37: 'left',
         38: 'up',
@@ -206,7 +202,6 @@
             snake.setDirection(newDirection);
         }
     });
-
 </script>
 
 </body>
